@@ -9,6 +9,7 @@ const ormconfig: DataSourceOptions = {
   port: 5432,
   password: '123',
   entities: [UserEntity],
+  synchronize: true,
 };
 
 export default ormconfig;
