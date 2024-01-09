@@ -24,12 +24,21 @@ export class AuthService {
     });
 
     if (user === null) {
+      const role = await this.rolesRepository.findOne({
+        where: {
+          name: 'user',
+        },
+      });
+
       const newUser = new UserEntity();
+
+      newUser.roles = [role];
+
       Object.assign(newUser, dto);
 
       this.userRepositoru.save(newUser);
 
-      const payload = { userId: newUser.id };
+      const payload = { userId: newUser.id, roles: newUser.roles };
 
       return await this.jwtService.signAsync(payload, { secret: 'secret' });
     }
