@@ -1,5 +1,6 @@
 import { DataSourceOptions } from 'typeorm';
 import { UserEntity } from './user/user.entity';
+import { RolesEntity } from './roles/roles.entity';
 
 const ormconfig: DataSourceOptions = {
   database: 'trelloDb',
@@ -8,7 +9,7 @@ const ormconfig: DataSourceOptions = {
   username: 'user',
   port: 5432,
   password: '123',
-  entities: [UserEntity],
+  entities: [UserEntity, RolesEntity],
   synchronize: true,
 };
 

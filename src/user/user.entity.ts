@@ -1,5 +1,13 @@
-import { BeforeInsert, Column, Entity, PrimaryGeneratedColumn } from 'typeorm';
+import {
+  BeforeInsert,
+  Column,
+  Entity,
+  JoinTable,
+  ManyToMany,
+  PrimaryGeneratedColumn,
+} from 'typeorm';
 import { hash } from 'bcrypt';
+import { RolesEntity } from 'src/roles/roles.entity';
 
 @Entity('users')
 export class UserEntity {
@@ -31,4 +39,8 @@ export class UserEntity {
 
   @Column({ nullable: true })
   accessTokenSecret: string;
+
+  @ManyToMany(() => RolesEntity)
+  @JoinTable()
+  roles: RolesEntity[];
 }
