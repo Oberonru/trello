@@ -41,7 +41,9 @@ export class AuthService {
 
       const payload = { userId: newUser.id, roles: newUser.roles };
 
-      return await this.jwtService.signAsync(payload, { secret: 'secret' });
+      return await this.jwtService.signAsync(payload, {
+        secret: process.env.JWT_SECRET,
+      });
     }
     throw new ForbiddenException();
   }
@@ -51,13 +53,21 @@ export class AuthService {
       where: {
         email: dto.email,
       },
+      relations: ['roles'],
     });
 
     if (user !== null) {
       const isEqual = bcrypt.compare(dto.password, user.password);
+
       if (isEqual) {
-        const payload = { userId: user.id };
-        return await this.jwtService.signAsync(payload, { secret: 'secret' });
+        const payload = {
+          userId: user.id,
+          roles: user.roles.map((role) => role.name),
+        };
+
+        return await this.jwtService.signAsync(payload, {
+          secret: process.env.JWT_SECRET,
+        });
       }
     }
 
