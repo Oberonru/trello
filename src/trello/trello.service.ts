@@ -1,4 +1,9 @@
 import { Injectable } from '@nestjs/common';
+import { HttpService } from '@nestjs/axios';
+import { firstValueFrom } from 'rxjs';
+import { UserEntity } from 'src/user/user.entity';
+import { Repository } from 'typeorm';
+import { InjectRepository } from '@nestjs/typeorm';
 import * as _oauth from 'oauth';
 
 const oauth_secrets = {};
@@ -32,12 +37,34 @@ const oauth = new _oauth.OAuth(
 
 @Injectable()
 export class TrelloService {
+  constructor(
+    private readonly httpService: HttpService,
+    @InjectRepository(UserEntity)
+    private readonly userRepository: Repository<UserEntity>,
+  ) {}
+
   link(): Promise<string> {
     return new Promise((resolve, rejects) => {
       oauth.getOAuthRequestToken((error, token, tokenSecret, results) => {
         oauth_secrets[token] = tokenSecret;
         resolve(token);
       });
+    });
+  }
+
+  callback(token: string, verifier: string) {
+    const tokenSecret = oauth_secrets[token];
+
+    return new Promise((resolve, reject) => {
+      oauth.getOAuthAccessToken(
+        token,
+        tokenSecret,
+        verifier,
+        async (error, accessToken, accessTokenSecret, results) => {
+          const url = `https://api.trello.com/1/members/me/?key=${process.env.TRELLO_KEY}&token=${accessToken}`;
+          const { data } = await firstValueFrom(this.httpService.get(url));
+        },
+      );
     });
   }
 }
