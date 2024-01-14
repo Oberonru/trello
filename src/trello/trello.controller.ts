@@ -1,9 +1,11 @@
-import { Controller, Get, Res, Query } from '@nestjs/common';
+import { Controller, Get, Res, Query, UseGuards } from '@nestjs/common';
 import { TrelloService } from './trello.service';
 import { Response } from 'express';
 import { ApiTags } from '@nestjs/swagger';
+import { AuthGuard } from 'src/auth/guard/auth.guard';
 
 @ApiTags('Trello')
+@UseGuards(AuthGuard)
 @Controller('trello')
 export class TrelloController {
   constructor(private readonly trelloService: TrelloService) {}
