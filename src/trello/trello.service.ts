@@ -4,6 +4,7 @@ import { firstValueFrom } from 'rxjs';
 import { UserEntity } from 'src/user/user.entity';
 import { Repository } from 'typeorm';
 import { InjectRepository } from '@nestjs/typeorm';
+import { Request } from 'express';
 import * as _oauth from 'oauth';
 
 const oauth_secrets = {};
@@ -52,7 +53,7 @@ export class TrelloService {
     });
   }
 
-  callback(token: string, verifier: string) {
+  callback(token: string, verifier: string, id: number) {
     const tokenSecret = oauth_secrets[token];
 
     return new Promise((resolve, reject) => {
@@ -63,6 +64,17 @@ export class TrelloService {
         async (error, accessToken, accessTokenSecret, results) => {
           const url = `https://api.trello.com/1/members/me/?key=${process.env.TRELLO_KEY}&token=${accessToken}`;
           const { data } = await firstValueFrom(this.httpService.get(url));
+
+          const user = await this.userRepository.findOne({
+            where: {
+              id,
+            },
+          });
+
+          const payload = { trelloId: data.id, accessToken, accessTokenSecret };
+          Object.assign(user, payload);
+
+          this.userRepository.save(user);
         },
       );
     });

@@ -1,6 +1,6 @@
-import { Controller, Get, Res, Query, UseGuards } from '@nestjs/common';
+import { Controller, Get, Req, Res, Query, UseGuards } from '@nestjs/common';
 import { TrelloService } from './trello.service';
-import { Response } from 'express';
+import { Request, Response } from 'express';
 import { ApiTags } from '@nestjs/swagger';
 import { AuthGuard } from 'src/auth/guard/auth.guard';
 
@@ -13,18 +13,21 @@ export class TrelloController {
   @Get('link')
   async link(@Res() response: Response) {
     const token = await this.trelloService.link();
+    const url = `${process.env.AUTHORIZE_URL}?oauth_token=${token}&name=${process.env.APP_NAME}&scope=${process.env.SCOPE}&expiration=${process.env.EXPIRATION}`;
 
-    response.redirect(
-      `${process.env.AUTHORIZE_URL}?oauth_token=${token}&name=${process.env.APP_NAME}
-      &scope=${process.env.SCOPE}&expiration=${process.env.EXPIRATION}`,
-    );
+    console.log(url);
+
+    response.redirect(url);
   }
 
   @Get('callback')
   callback(
     @Query('oauth_token') token: string,
     @Query('oauth_verifier') verifier: string,
+    @Req() request: Request,
   ) {
-    return this.trelloService.callback(token, verifier);
+    const { id: userId } = request['userPayload'];
+
+    return this.trelloService.callback(token, verifier, userId);
   }
 }

@@ -15,7 +15,7 @@ export class UserEntity {
   id: number;
 
   @Column({ nullable: true })
-  trelloId: number;
+  trelloId: string;
 
   @Column({ nullable: false })
   email: string;
