@@ -7,7 +7,7 @@ import {
   Req,
   UseGuards,
 } from '@nestjs/common';
-import { ColumnService } from './column.service';
+import { ColumnService } from './board.service';
 import { AuthGuard } from 'src/auth/guard/auth.guard';
 import { Request } from 'express';
 

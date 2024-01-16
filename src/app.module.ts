@@ -6,7 +6,7 @@ import { AuthModule } from './auth/auth.module';
 import { TrelloModule } from './trello/trello.module';
 import { AppController } from './app.controller';
 import { AppService } from './app.service';
-import { ColumnModule } from './column/column.module';
+import { ColumnModule } from './board/board.module';
 import ormconfig from './ormconfig';
 
 @Module({
