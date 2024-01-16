@@ -6,6 +6,7 @@ import { AuthModule } from './auth/auth.module';
 import { TrelloModule } from './trello/trello.module';
 import { AppController } from './app.controller';
 import { AppService } from './app.service';
+import { ColumnModule } from './column/column.module';
 import ormconfig from './ormconfig';
 
 @Module({
@@ -15,6 +16,7 @@ import ormconfig from './ormconfig';
     HttpModule,
     AuthModule,
     TrelloModule,
+    ColumnModule,
   ],
   controllers: [AppController],
   providers: [AppService],
