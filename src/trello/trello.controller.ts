@@ -26,7 +26,7 @@ export class TrelloController {
     @Query('oauth_verifier') verifier: string,
     @Req() request: Request,
   ) {
-    const { id: userId } = request['userPayload'];
+    const { userId } = request['userPayload'];
 
     return this.trelloService.callback(token, verifier, userId);
   }

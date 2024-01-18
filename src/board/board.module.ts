@@ -1,11 +1,13 @@
 import { Module } from '@nestjs/common';
-import { ColumnController } from './board.controller';
-import { ColumnService } from './board.service';
+import { HttpModule } from '@nestjs/axios';
+import { BoardController } from './board.controller';
+import { BoardService } from './board.service';
 import { JwtModule } from '@nestjs/jwt';
+import { UserModule } from 'src/user/user.module';
 
 @Module({
-  imports: [JwtModule],
-  controllers: [ColumnController],
-  providers: [ColumnService],
+  imports: [HttpModule, JwtModule, UserModule],
+  controllers: [BoardController],
+  providers: [BoardService],
 })
-export class ColumnModule {}
+export class BoardModule {}
