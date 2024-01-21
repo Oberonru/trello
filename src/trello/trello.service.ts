@@ -61,7 +61,7 @@ export class TrelloService {
         tokenSecret,
         verifier,
         async (error, accessToken, accessTokenSecret, results) => {
-          const url = `https://api.trello.com/1/members/me/?key=${process.env.TRELLO_KEY}&token=${accessToken}`;
+          const url = `${process.env.TRELLO_URL}1/members/me/?key=${process.env.TRELLO_KEY}&token=${accessToken}`;
           const { data } = await firstValueFrom(this.httpService.get(url));
 
           const user = await this.userRepository.findOne({

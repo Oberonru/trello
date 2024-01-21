@@ -19,7 +19,7 @@ export class BoardService {
         id: userId,
       },
     });
-    const url = `${process.env.TRELLO_BOARDS_URL}?name=${name}&key=${process.env.TRELLO_KEY}&token=${user.accessToken}`;
+    const url = `${process.env.TRELLO_URL}1/boards/?name=${name}&key=${process.env.TRELLO_KEY}&token=${user.accessToken}`;
     let data;
 
     try {
@@ -33,7 +33,21 @@ export class BoardService {
     return data;
   }
 
-  getBoard() {
-    return null;
+  async getBoardsThatMember(userId: number) {
+    const user = await this.userRepository.findOne({
+      where: {
+        id: userId,
+      },
+    });
+
+    const url = `${process.env.TRELLO_URL}1/members/me/boards?key=${process.env.TRELLO_KEY}&token=${user.accessToken}`;
+    let data;
+    try {
+      const response = await firstValueFrom(this.httpService.get(url));
+      data = response.data;
+    } catch (error) {
+      throw error;
+    }
+    return data;
   }
 }

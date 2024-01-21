@@ -11,7 +11,9 @@ import {
 import { BoardService } from './board.service';
 import { AuthGuard } from 'src/auth/guard/auth.guard';
 import { Request } from 'express';
+import { ApiTags } from '@nestjs/swagger';
 
+@ApiTags('Boards')
 @UseGuards(AuthGuard)
 @Controller('users/:userId/boards')
 export class BoardController {
@@ -24,17 +26,21 @@ export class BoardController {
     return this.boardService.createBoard(name, userId);
   }
 
-  @Get(':boardId')
-  getBoard(@Param('userId') userId: number, @Req() request: Request) {
-    if (!this.isMe(userId, request)) {
+  @Get()
+  getBoardsThatMember(
+    @Param('userId') userId: string,
+    @Req() request: Request,
+  ) {
+    if (parseInt(userId) !== request['userPayload']['userId']) {
       throw new ForbiddenException();
     }
-    return this.boardService.getBoard();
+
+    return this.boardService.getBoardsThatMember(parseInt(userId));
   }
 
-  private isMe(id: number, request: Request): boolean {
+  private isMe(id: string, request: Request): boolean {
     const { userId } = request['userPayload'];
 
-    return userId === Number(id);
+    return Number(id) === userId;
   }
 }
